@@ -54,9 +54,9 @@ priced AS (
     AND u.billing_origin_product IN ('JOBS','ALL_PURPOSE')
 ),
 spend_tagged AS (
-  SELECT p.*, ws.bu, ws.env FROM priced p JOIN ws ON p.workspace_id = ws.workspace_id
-  WHERE (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))
-    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))
+  SELECT p.*, COALESCE(ws.bu,'Unmapped') AS bu, COALESCE(ws.env,'Unmapped') AS env FROM priced p LEFT JOIN ws ON p.workspace_id = ws.workspace_id
+  WHERE (array_contains(:bu,'All')  OR array_contains(:bu,  COALESCE(ws.bu,'Unmapped')))
+    AND (array_contains(:env,'All') OR array_contains(:env, COALESCE(ws.env,'Unmapped')))
 )
 SELECT
   ROUND(SUM(CASE WHEN bucket='SRV'      THEN revenue END),2) AS serverless_spend,

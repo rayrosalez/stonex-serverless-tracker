@@ -44,14 +44,16 @@ srv AS (
     AND u.usage_metadata.job_id IS NOT NULL
   GROUP BY u.workspace_id, u.usage_metadata.job_id
 )
-SELECT ws.bu, ws.env, ws.workspace_name, s.job_id,
+SELECT COALESCE(ws.bu,'Unmapped') AS bu, COALESCE(ws.env,'Unmapped') AS env,
+  COALESCE(ws.workspace_name, s.workspace_id) AS workspace_name, s.job_id,
   MAX(j.name) AS job_name,
   ROUND(s.serverless_dbus,2) AS serverless_dbus,
   s.first_usage, s.last_usage
-FROM srv s JOIN ws ON s.workspace_id=ws.workspace_id
+FROM srv s LEFT JOIN ws ON s.workspace_id=ws.workspace_id
 LEFT JOIN system.lakeflow.jobs j ON s.workspace_id=j.workspace_id AND s.job_id=j.job_id
-WHERE (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))
-  AND (array_contains(:env,'All') OR array_contains(:env, ws.env))
-GROUP BY ws.bu, ws.env, ws.workspace_name, s.job_id, s.serverless_dbus, s.first_usage, s.last_usage
+WHERE (array_contains(:bu,'All')  OR array_contains(:bu,  COALESCE(ws.bu,'Unmapped')))
+  AND (array_contains(:env,'All') OR array_contains(:env, COALESCE(ws.env,'Unmapped')))
+GROUP BY COALESCE(ws.bu,'Unmapped'), COALESCE(ws.env,'Unmapped'),
+  COALESCE(ws.workspace_name, s.workspace_id), s.job_id, s.serverless_dbus, s.first_usage, s.last_usage
 ORDER BY serverless_dbus DESC
 LIMIT 500

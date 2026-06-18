@@ -50,9 +50,9 @@ runs AS (
   LEFT JOIN system.compute.clusters cl ON r.cluster_id=cl.cluster_id AND r.workspace_id=cl.workspace_id
 ),
 tagged_runs AS (
-  SELECT r.*, ws.bu FROM runs r JOIN ws ON r.workspace_id=ws.workspace_id
-  WHERE r.bucket<>'OTHER' AND ws.bu<>'Unmapped'
-    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))
+  SELECT r.*, COALESCE(ws.bu,'Unmapped') AS bu FROM runs r LEFT JOIN ws ON r.workspace_id=ws.workspace_id
+  WHERE r.bucket<>'OTHER' AND COALESCE(ws.bu,'Unmapped')<>'Unmapped'
+    AND (array_contains(:bu,'All')  OR array_contains(:bu,  COALESCE(ws.bu,'Unmapped')))
 ),
 per_job_week AS (
   SELECT week, bu, job_id,

@@ -54,11 +54,11 @@ runs AS (
     ON r.cluster_id = cl.cluster_id AND r.workspace_id = cl.workspace_id
 ),
 tagged_runs AS (
-  SELECT r.*, ws.bu, ws.env, ws.workspace_name
-  FROM runs r JOIN ws ON r.workspace_id = ws.workspace_id
+  SELECT r.*, COALESCE(ws.bu,'Unmapped') AS bu, COALESCE(ws.env,'Unmapped') AS env, COALESCE(ws.workspace_name, r.workspace_id) AS workspace_name
+  FROM runs r LEFT JOIN ws ON r.workspace_id = ws.workspace_id
   WHERE r.bucket <> 'OTHER'
-    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))
-    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))
+    AND (array_contains(:bu,'All')  OR array_contains(:bu,  COALESCE(ws.bu,'Unmapped')))
+    AND (array_contains(:env,'All') OR array_contains(:env, COALESCE(ws.env,'Unmapped')))
 ),
 per_job AS (
   SELECT workspace_id, bu, env, job_id,
