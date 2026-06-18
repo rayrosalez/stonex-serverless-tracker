@@ -1,0 +1,9 @@
+# Databricks bundle build artifacts
+.databricks/
+*.tfstate
+*.tfstate.backup
+
+# OS / editor
+.DS_Store
+__pycache__/
+*.pyc

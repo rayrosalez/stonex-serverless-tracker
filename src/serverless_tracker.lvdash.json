@@ -1,0 +1,3115 @@
+{
+ "datasets": [
+  {
+   "name": "param_bu",
+   "displayName": "param_bu",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n)\nSELECT 'All' AS bu UNION SELECT DISTINCT bu FROM ws WHERE bu <> 'Unmapped' ORDER BY bu"
+   ]
+  },
+  {
+   "name": "param_env",
+   "displayName": "param_env",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n)\nSELECT 'All' AS env UNION SELECT DISTINCT env FROM ws ORDER BY env"
+   ]
+  },
+  {
+   "name": "kpi_headline",
+   "displayName": "kpi_headline",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, t.job_run_id, t.period_start_time,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.job_run_id, r.period_start_time,\n    CASE\n      WHEN r.compute_type = 'SERVERLESS_COMPUTE' THEN 'SRV'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' THEN 'JC'\n      ELSE 'OTHER'\n    END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl\n    ON r.cluster_id = cl.cluster_id AND r.workspace_id = cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env, ws.workspace_name\n  FROM runs r JOIN ws ON r.workspace_id = ws.workspace_id\n  WHERE r.bucket <> 'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job AS (\n  SELECT workspace_id, bu, env, job_id,\n    MAX(CASE WHEN bucket='AP'  THEN 1 ELSE 0 END) used_ap,\n    MAX(CASE WHEN bucket='JC'  THEN 1 ELSE 0 END) used_jc,\n    MAX(CASE WHEN bucket='SRV' THEN 1 ELSE 0 END) used_srv\n  FROM tagged_runs GROUP BY workspace_id, bu, env, job_id\n),\nclassified AS (\n  SELECT workspace_id, bu, env, job_id,\n    CASE WHEN used_ap=1 THEN 'AP' WHEN used_jc=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM per_job\n)\nSELECT\n  COUNT(*) AS total_jobs,\n  SUM(CASE WHEN primary_bucket='AP'  THEN 1 ELSE 0 END) AS jobs_all_purpose,\n  SUM(CASE WHEN primary_bucket='JC'  THEN 1 ELSE 0 END) AS jobs_classic,\n  SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END) AS jobs_serverless,\n  ROUND(100.0*SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) AS pct_serverless,\n  ROUND(100.0*SUM(CASE WHEN primary_bucket='AP'  THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) AS pct_all_purpose,\n  ROUND(100.0*SUM(CASE WHEN primary_bucket='JC'  THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) AS pct_classic\nFROM classified"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "spend_kpi",
+   "displayName": "spend_kpi",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\npriced AS (\n  SELECT\n    u.usage_date AS date, u.workspace_id,\n    CASE\n      WHEN u.billing_origin_product='JOBS' AND u.product_features.is_serverless=true  THEN 'SRV'\n      WHEN u.billing_origin_product='JOBS' AND u.product_features.is_serverless=false THEN 'JC'\n      WHEN u.billing_origin_product='ALL_PURPOSE' THEN 'AP_TOTAL'\n      ELSE 'OTHER'\n    END AS bucket,\n    -- list-price estimate; multiply by your effective $/DBU rate here for contract spend\n    u.usage_quantity * COALESCE(lp.pricing.default,0) * 1.0 AS revenue\n  FROM system.billing.usage u\n  LEFT JOIN system.billing.list_prices lp\n    ON u.sku_name = lp.sku_name AND u.usage_unit = lp.usage_unit\n   AND u.usage_end_time >= lp.price_start_time\n   AND (u.usage_end_time < lp.price_end_time OR lp.price_end_time IS NULL)\n  WHERE u.usage_date BETWEEN :time_range.min AND :time_range.max\n    AND u.billing_origin_product IN ('JOBS','ALL_PURPOSE')\n),\nspend_tagged AS (\n  SELECT p.*, ws.bu, ws.env FROM priced p JOIN ws ON p.workspace_id = ws.workspace_id\n  WHERE (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n)\nSELECT\n  ROUND(SUM(CASE WHEN bucket='SRV'      THEN revenue END),2) AS serverless_spend,\n  ROUND(SUM(CASE WHEN bucket='JC'       THEN revenue END),2) AS classic_jobs_spend,\n  ROUND(SUM(CASE WHEN bucket='AP_TOTAL' THEN revenue END),2) AS all_purpose_total_spend\nFROM spend_tagged"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "time_series_pct",
+   "displayName": "time_series_pct",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, date_trunc('WEEK', t.period_start_time) AS week,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.week,\n    CASE WHEN r.compute_type='SERVERLESS_COMPUTE' THEN 'SRV'\n         WHEN r.compute_type='CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n         WHEN r.compute_type='CLASSIC_COMPUTE' THEN 'JC' ELSE 'OTHER' END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl ON r.cluster_id=cl.cluster_id AND r.workspace_id=cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env FROM runs r JOIN ws ON r.workspace_id=ws.workspace_id\n  WHERE r.bucket<>'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job_week AS (\n  SELECT week, job_id,\n    CASE WHEN MAX(CASE WHEN bucket='AP' THEN 1 ELSE 0 END)=1 THEN 'AP'\n         WHEN MAX(CASE WHEN bucket='JC' THEN 1 ELSE 0 END)=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM tagged_runs GROUP BY week, job_id\n)\nSELECT week,\n  COUNT(*) AS total_jobs,\n  ROUND(100.0*SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) AS pct_serverless\nFROM per_job_week GROUP BY week ORDER BY week"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "time_series_counts",
+   "displayName": "time_series_counts",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, date_trunc('WEEK', t.period_start_time) AS week,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.week,\n    CASE WHEN r.compute_type='SERVERLESS_COMPUTE' THEN 'SRV'\n         WHEN r.compute_type='CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n         WHEN r.compute_type='CLASSIC_COMPUTE' THEN 'JC' ELSE 'OTHER' END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl ON r.cluster_id=cl.cluster_id AND r.workspace_id=cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env FROM runs r JOIN ws ON r.workspace_id=ws.workspace_id\n  WHERE r.bucket<>'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job_week AS (\n  SELECT week, job_id,\n    CASE WHEN MAX(CASE WHEN bucket='AP' THEN 1 ELSE 0 END)=1 THEN 'AP'\n         WHEN MAX(CASE WHEN bucket='JC' THEN 1 ELSE 0 END)=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM tagged_runs GROUP BY week, job_id\n)\nSELECT week,\n  SUM(CASE WHEN primary_bucket='AP'  THEN 1 ELSE 0 END) AS all_purpose,\n  SUM(CASE WHEN primary_bucket='JC'  THEN 1 ELSE 0 END) AS jobs_compute,\n  SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END) AS serverless\nFROM per_job_week GROUP BY week ORDER BY week"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "breakdown_by_bu",
+   "displayName": "breakdown_by_bu",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, t.job_run_id, t.period_start_time,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.job_run_id, r.period_start_time,\n    CASE\n      WHEN r.compute_type = 'SERVERLESS_COMPUTE' THEN 'SRV'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' THEN 'JC'\n      ELSE 'OTHER'\n    END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl\n    ON r.cluster_id = cl.cluster_id AND r.workspace_id = cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env, ws.workspace_name\n  FROM runs r JOIN ws ON r.workspace_id = ws.workspace_id\n  WHERE r.bucket <> 'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job AS (\n  SELECT workspace_id, bu, env, job_id,\n    MAX(CASE WHEN bucket='AP'  THEN 1 ELSE 0 END) used_ap,\n    MAX(CASE WHEN bucket='JC'  THEN 1 ELSE 0 END) used_jc,\n    MAX(CASE WHEN bucket='SRV' THEN 1 ELSE 0 END) used_srv\n  FROM tagged_runs GROUP BY workspace_id, bu, env, job_id\n),\nclassified AS (\n  SELECT workspace_id, bu, env, job_id,\n    CASE WHEN used_ap=1 THEN 'AP' WHEN used_jc=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM per_job\n)\nSELECT bu,\n  CASE primary_bucket WHEN 'AP' THEN 'All-Purpose' WHEN 'JC' THEN 'Jobs-Compute' ELSE 'Serverless' END AS compute_type,\n  COUNT(*) AS jobs\nFROM classified WHERE bu <> 'Unmapped' GROUP BY bu, primary_bucket ORDER BY bu"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "breakdown_by_env",
+   "displayName": "breakdown_by_env",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, t.job_run_id, t.period_start_time,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.job_run_id, r.period_start_time,\n    CASE\n      WHEN r.compute_type = 'SERVERLESS_COMPUTE' THEN 'SRV'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' THEN 'JC'\n      ELSE 'OTHER'\n    END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl\n    ON r.cluster_id = cl.cluster_id AND r.workspace_id = cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env, ws.workspace_name\n  FROM runs r JOIN ws ON r.workspace_id = ws.workspace_id\n  WHERE r.bucket <> 'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job AS (\n  SELECT workspace_id, bu, env, job_id,\n    MAX(CASE WHEN bucket='AP'  THEN 1 ELSE 0 END) used_ap,\n    MAX(CASE WHEN bucket='JC'  THEN 1 ELSE 0 END) used_jc,\n    MAX(CASE WHEN bucket='SRV' THEN 1 ELSE 0 END) used_srv\n  FROM tagged_runs GROUP BY workspace_id, bu, env, job_id\n),\nclassified AS (\n  SELECT workspace_id, bu, env, job_id,\n    CASE WHEN used_ap=1 THEN 'AP' WHEN used_jc=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM per_job\n)\nSELECT env,\n  CASE primary_bucket WHEN 'AP' THEN 'All-Purpose' WHEN 'JC' THEN 'Jobs-Compute' ELSE 'Serverless' END AS compute_type,\n  COUNT(*) AS jobs\nFROM classified GROUP BY env, primary_bucket ORDER BY env"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "bu_scorecard",
+   "displayName": "bu_scorecard",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, t.job_run_id, t.period_start_time,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.job_run_id, r.period_start_time,\n    CASE\n      WHEN r.compute_type = 'SERVERLESS_COMPUTE' THEN 'SRV'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' THEN 'JC'\n      ELSE 'OTHER'\n    END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl\n    ON r.cluster_id = cl.cluster_id AND r.workspace_id = cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env, ws.workspace_name\n  FROM runs r JOIN ws ON r.workspace_id = ws.workspace_id\n  WHERE r.bucket <> 'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job AS (\n  SELECT workspace_id, bu, env, job_id,\n    MAX(CASE WHEN bucket='AP'  THEN 1 ELSE 0 END) used_ap,\n    MAX(CASE WHEN bucket='JC'  THEN 1 ELSE 0 END) used_jc,\n    MAX(CASE WHEN bucket='SRV' THEN 1 ELSE 0 END) used_srv\n  FROM tagged_runs GROUP BY workspace_id, bu, env, job_id\n),\nclassified AS (\n  SELECT workspace_id, bu, env, job_id,\n    CASE WHEN used_ap=1 THEN 'AP' WHEN used_jc=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM per_job\n)\nSELECT bu,\n  COUNT(*) AS total_jobs,\n  SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END) AS serverless_jobs,\n  ROUND(100.0*SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) AS pct_serverless,\n  SUM(CASE WHEN primary_bucket='AP' THEN 1 ELSE 0 END) AS all_purpose_jobs,\n  ROUND(100.0*SUM(CASE WHEN primary_bucket='AP' THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) AS pct_all_purpose,\n  SUM(CASE WHEN primary_bucket='JC' THEN 1 ELSE 0 END) AS jobs_compute_jobs,\n  ROUND(100.0*SUM(CASE WHEN primary_bucket='JC' THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) AS pct_jobs_compute\nFROM classified WHERE bu <> 'Unmapped' GROUP BY bu ORDER BY total_jobs DESC"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "bu_opportunities",
+   "displayName": "bu_opportunities",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, t.job_run_id, t.period_start_time,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.job_run_id, r.period_start_time,\n    CASE\n      WHEN r.compute_type = 'SERVERLESS_COMPUTE' THEN 'SRV'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' THEN 'JC'\n      ELSE 'OTHER'\n    END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl\n    ON r.cluster_id = cl.cluster_id AND r.workspace_id = cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env, ws.workspace_name\n  FROM runs r JOIN ws ON r.workspace_id = ws.workspace_id\n  WHERE r.bucket <> 'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job AS (\n  SELECT workspace_id, bu, env, job_id,\n    MAX(CASE WHEN bucket='AP'  THEN 1 ELSE 0 END) used_ap,\n    MAX(CASE WHEN bucket='JC'  THEN 1 ELSE 0 END) used_jc,\n    MAX(CASE WHEN bucket='SRV' THEN 1 ELSE 0 END) used_srv\n  FROM tagged_runs GROUP BY workspace_id, bu, env, job_id\n),\nclassified AS (\n  SELECT workspace_id, bu, env, job_id,\n    CASE WHEN used_ap=1 THEN 'AP' WHEN used_jc=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM per_job\n)\n,\nbu_summary AS (\n  SELECT bu, COUNT(*) total_jobs,\n    SUM(CASE WHEN primary_bucket='AP' THEN 1 ELSE 0 END) jobs_ap,\n    ROUND(100.0*SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) pct_srv\n  FROM classified WHERE bu<>'Unmapped' GROUP BY bu\n)\nSELECT\n  (SELECT COUNT(*) FROM bu_summary WHERE pct_srv>=50) AS bus_above_50pct,\n  (SELECT COUNT(*) FROM bu_summary WHERE pct_srv<5)   AS bus_below_5pct,\n  (SELECT bu FROM bu_summary ORDER BY jobs_ap DESC LIMIT 1) AS largest_ap_fleet"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "bu_trend",
+   "displayName": "bu_trend",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, date_trunc('WEEK', t.period_start_time) AS week,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.week,\n    CASE WHEN r.compute_type='SERVERLESS_COMPUTE' THEN 'SRV'\n         WHEN r.compute_type='CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n         WHEN r.compute_type='CLASSIC_COMPUTE' THEN 'JC' ELSE 'OTHER' END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl ON r.cluster_id=cl.cluster_id AND r.workspace_id=cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu FROM runs r JOIN ws ON r.workspace_id=ws.workspace_id\n  WHERE r.bucket<>'OTHER' AND ws.bu<>'Unmapped'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n),\nper_job_week AS (\n  SELECT week, bu, job_id,\n    CASE WHEN MAX(CASE WHEN bucket='AP' THEN 1 ELSE 0 END)=1 THEN 'AP'\n         WHEN MAX(CASE WHEN bucket='JC' THEN 1 ELSE 0 END)=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM tagged_runs GROUP BY week, bu, job_id\n)\nSELECT week, bu,\n  ROUND(100.0*SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) AS pct_serverless\nFROM per_job_week GROUP BY week, bu ORDER BY week, bu"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "bu_heatmap",
+   "displayName": "bu_heatmap",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, t.job_run_id, t.period_start_time,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.job_run_id, r.period_start_time,\n    CASE\n      WHEN r.compute_type = 'SERVERLESS_COMPUTE' THEN 'SRV'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' THEN 'JC'\n      ELSE 'OTHER'\n    END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl\n    ON r.cluster_id = cl.cluster_id AND r.workspace_id = cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env, ws.workspace_name\n  FROM runs r JOIN ws ON r.workspace_id = ws.workspace_id\n  WHERE r.bucket <> 'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job AS (\n  SELECT workspace_id, bu, env, job_id,\n    MAX(CASE WHEN bucket='AP'  THEN 1 ELSE 0 END) used_ap,\n    MAX(CASE WHEN bucket='JC'  THEN 1 ELSE 0 END) used_jc,\n    MAX(CASE WHEN bucket='SRV' THEN 1 ELSE 0 END) used_srv\n  FROM tagged_runs GROUP BY workspace_id, bu, env, job_id\n),\nclassified AS (\n  SELECT workspace_id, bu, env, job_id,\n    CASE WHEN used_ap=1 THEN 'AP' WHEN used_jc=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM per_job\n)\n,\nper AS (\n  SELECT bu,\n    CASE primary_bucket WHEN 'AP' THEN 'All-Purpose' WHEN 'JC' THEN 'Jobs-Compute' ELSE 'Serverless' END AS compute_type,\n    COUNT(*) AS jobs\n  FROM classified WHERE bu <> 'Unmapped' GROUP BY bu, primary_bucket\n)\nSELECT bu, compute_type, jobs,\n  ROUND(100.0*jobs/NULLIF(SUM(jobs) OVER (PARTITION BY bu),0),1) AS pct_of_bu\nFROM per ORDER BY bu, compute_type"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "env_kpi",
+   "displayName": "env_kpi",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, t.job_run_id, t.period_start_time,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.job_run_id, r.period_start_time,\n    CASE\n      WHEN r.compute_type = 'SERVERLESS_COMPUTE' THEN 'SRV'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' THEN 'JC'\n      ELSE 'OTHER'\n    END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl\n    ON r.cluster_id = cl.cluster_id AND r.workspace_id = cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env, ws.workspace_name\n  FROM runs r JOIN ws ON r.workspace_id = ws.workspace_id\n  WHERE r.bucket <> 'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job AS (\n  SELECT workspace_id, bu, env, job_id,\n    MAX(CASE WHEN bucket='AP'  THEN 1 ELSE 0 END) used_ap,\n    MAX(CASE WHEN bucket='JC'  THEN 1 ELSE 0 END) used_jc,\n    MAX(CASE WHEN bucket='SRV' THEN 1 ELSE 0 END) used_srv\n  FROM tagged_runs GROUP BY workspace_id, bu, env, job_id\n),\nclassified AS (\n  SELECT workspace_id, bu, env, job_id,\n    CASE WHEN used_ap=1 THEN 'AP' WHEN used_jc=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM per_job\n)\nSELECT env,\n  COUNT(*) AS total_jobs,\n  SUM(CASE WHEN primary_bucket='AP'  THEN 1 ELSE 0 END) AS jobs_all_purpose,\n  SUM(CASE WHEN primary_bucket='JC'  THEN 1 ELSE 0 END) AS jobs_classic,\n  SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END) AS jobs_serverless,\n  ROUND(100.0*SUM(CASE WHEN primary_bucket='SRV' THEN 1 ELSE 0 END)/NULLIF(COUNT(*),0),1) AS pct_serverless\nFROM classified GROUP BY env ORDER BY env"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "env_heatmap",
+   "displayName": "env_heatmap",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, t.job_run_id, t.period_start_time,\n         c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.job_run_id, r.period_start_time,\n    CASE\n      WHEN r.compute_type = 'SERVERLESS_COMPUTE' THEN 'SRV'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n      WHEN r.compute_type = 'CLASSIC_COMPUTE' THEN 'JC'\n      ELSE 'OTHER'\n    END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl\n    ON r.cluster_id = cl.cluster_id AND r.workspace_id = cl.workspace_id\n),\ntagged_runs AS (\n  SELECT r.*, ws.bu, ws.env, ws.workspace_name\n  FROM runs r JOIN ws ON r.workspace_id = ws.workspace_id\n  WHERE r.bucket <> 'OTHER'\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n),\nper_job AS (\n  SELECT workspace_id, bu, env, job_id,\n    MAX(CASE WHEN bucket='AP'  THEN 1 ELSE 0 END) used_ap,\n    MAX(CASE WHEN bucket='JC'  THEN 1 ELSE 0 END) used_jc,\n    MAX(CASE WHEN bucket='SRV' THEN 1 ELSE 0 END) used_srv\n  FROM tagged_runs GROUP BY workspace_id, bu, env, job_id\n),\nclassified AS (\n  SELECT workspace_id, bu, env, job_id,\n    CASE WHEN used_ap=1 THEN 'AP' WHEN used_jc=1 THEN 'JC' ELSE 'SRV' END AS primary_bucket\n  FROM per_job\n)\n,\nper AS (\n  SELECT env,\n    CASE primary_bucket WHEN 'AP' THEN 'All-Purpose' WHEN 'JC' THEN 'Jobs-Compute' ELSE 'Serverless' END AS compute_type,\n    COUNT(*) AS jobs\n  FROM classified GROUP BY env, primary_bucket\n)\nSELECT env, compute_type, jobs,\n  ROUND(100.0*jobs/NULLIF(SUM(jobs) OVER (PARTITION BY env),0),1) AS pct_of_env\nFROM per ORDER BY env, compute_type"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "job_table",
+   "displayName": "job_table",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nruns_raw AS (\n  SELECT t.workspace_id, t.job_id, t.job_run_id, t.period_start_time,\n         t.execution_duration_seconds, c.type AS compute_type, c.cluster_id\n  FROM system.lakeflow.job_task_run_timeline t\n  LATERAL VIEW explode(t.compute) e AS c\n  WHERE t.period_start_time >= :time_range.min AND t.period_start_time < :time_range.max + INTERVAL 1 DAY\n),\nruns AS (\n  SELECT r.workspace_id, r.job_id, r.job_run_id, r.period_start_time, r.execution_duration_seconds,\n    CASE WHEN r.compute_type='SERVERLESS_COMPUTE' THEN 'SRV'\n         WHEN r.compute_type='CLASSIC_COMPUTE' AND cl.cluster_source IN ('UI','API') THEN 'AP'\n         WHEN r.compute_type='CLASSIC_COMPUTE' THEN 'JC' ELSE 'OTHER' END AS bucket\n  FROM runs_raw r\n  LEFT JOIN system.compute.clusters cl ON r.cluster_id=cl.cluster_id AND r.workspace_id=cl.workspace_id\n),\ntagged AS (\n  SELECT r.*, ws.bu, ws.env, ws.workspace_name FROM runs r JOIN ws ON r.workspace_id=ws.workspace_id\n  WHERE r.bucket IN ('AP','JC')\n    AND (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n    AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\n)\nSELECT\n  workspace_name, bu, env, t.job_id,\n  MAX(j.name) AS job_name,\n  CASE WHEN MAX(CASE WHEN bucket='AP' THEN 1 ELSE 0 END)=1 THEN 'JOBS_ON_ALL_PURPOSE' ELSE 'JOBS_ON_CLASSIC' END AS compute_bucket,\n  COUNT(DISTINCT t.job_run_id) AS run_count,\n  COUNT(DISTINCT date(t.period_start_time)) AS active_days,\n  ROUND(AVG(t.execution_duration_seconds)/60.0,1) AS avg_runtime_min,\n  MAX(date(t.period_start_time)) AS last_run_date\nFROM tagged t\nLEFT JOIN system.lakeflow.jobs j ON t.workspace_id=j.workspace_id AND t.job_id=j.job_id\nGROUP BY workspace_name, bu, env, t.job_id\nORDER BY run_count DESC\nLIMIT 500"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "serverless_job_table",
+   "displayName": "serverless_job_table",
+   "queryLines": [
+    "WITH ws AS (\n  SELECT\n    workspace_id,\n    workspace_name,\n    -- ===== EDIT: map workspace_name -> Business Unit (StoneX authoritative mapping) =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%enterprisedata-wholesale%' THEN 'GDS_ETL'\n      WHEN lower(workspace_name) LIKE '%-daas-%'                    THEN 'DAAS'\n      WHEN lower(workspace_name) LIKE '%enterprisedata-global%'     THEN 'GDS_Consumption'\n      WHEN lower(workspace_name) LIKE '%marketdata%'                THEN 'Market_Data'\n      WHEN lower(workspace_name) LIKE '%retail-insights%'           THEN 'Insights_Analytics'\n      WHEN lower(workspace_name) LIKE '%cdhub%'                     THEN 'CDHUB'\n      WHEN lower(workspace_name) LIKE '%devtech%'                   THEN 'Devtech'\n      WHEN lower(workspace_name) LIKE '%saswealth%'                 THEN 'SasWealth'\n      WHEN lower(workspace_name) LIKE '%ops-analytics%'             THEN 'OPS_Analytics'\n      WHEN lower(workspace_name) LIKE '%accounting%'                THEN 'Accounting_Global'\n      WHEN lower(workspace_name) LIKE '%risk-systems%'              THEN 'Risk_Systems'\n      WHEN lower(workspace_name) LIKE '%vulcan%'                    THEN 'Vulcan'\n      WHEN workspace_name IN ('dbw-enterprisedata-retail-ppe-uks','dbw-vulcan-devops-eus2','dbw-enterprisedata-retail-dev-uks','dbw-enterprisedata-retail-qat-uks','dbw-retail-backoffice-qat-uks','dbw-enterprisedata-retail-prod-uks','dbw-retail-backoffice-ppe-uks','dbw-retail-backoffice-prod-uks') THEN 'UKS_Legacy'\n      WHEN lower(workspace_name) LIKE '%premium%'                   THEN 'Gen1'\n      ELSE 'Unmapped'\n    END AS bu,\n    -- ===== EDIT: derive environment from workspace_name =====\n    CASE\n      WHEN lower(workspace_name) LIKE '%-dev-%'     THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-sandbox-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-test-%'    THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-nonprod-%' THEN 'DEV'\n      WHEN lower(workspace_name) LIKE '%-qat-%'     THEN 'QAT'\n      WHEN lower(workspace_name) LIKE '%-ppe-%'     THEN 'PPE'\n      WHEN lower(workspace_name) LIKE '%-prod-%'    THEN 'PROD'\n      WHEN lower(workspace_name) LIKE '%-beta-%'    THEN 'PROD'\n      ELSE 'Unmapped'\n    END AS env\n  FROM system.access.workspaces_latest\n),\nsrv AS (\n  SELECT u.workspace_id, u.usage_metadata.job_id AS job_id,\n         SUM(u.usage_quantity) AS serverless_dbus,\n         MIN(u.usage_date) AS first_usage, MAX(u.usage_date) AS last_usage\n  FROM system.billing.usage u\n  WHERE u.usage_date BETWEEN :time_range.min AND :time_range.max\n    AND u.billing_origin_product='JOBS' AND u.product_features.is_serverless=true\n    AND u.usage_metadata.job_id IS NOT NULL\n  GROUP BY u.workspace_id, u.usage_metadata.job_id\n)\nSELECT ws.bu, ws.env, ws.workspace_name, s.job_id,\n  MAX(j.name) AS job_name,\n  ROUND(s.serverless_dbus,2) AS serverless_dbus,\n  s.first_usage, s.last_usage\nFROM srv s JOIN ws ON s.workspace_id=ws.workspace_id\nLEFT JOIN system.lakeflow.jobs j ON s.workspace_id=j.workspace_id AND s.job_id=j.job_id\nWHERE (array_contains(:bu,'All')  OR array_contains(:bu,  ws.bu))\n  AND (array_contains(:env,'All') OR array_contains(:env, ws.env))\nGROUP BY ws.bu, ws.env, ws.workspace_name, s.job_id, s.serverless_dbus, s.first_usage, s.last_usage\nORDER BY serverless_dbus DESC\nLIMIT 500"
+   ],
+   "parameters": [
+    {
+     "displayName": "time_range",
+     "keyword": "time_range",
+     "dataType": "DATE",
+     "complexType": "RANGE",
+     "defaultSelection": {
+      "range": {
+       "dataType": "DATE",
+       "min": {
+        "value": "now-60d/d"
+       },
+       "max": {
+        "value": "now/d"
+       }
+      }
+     }
+    },
+    {
+     "displayName": "bu",
+     "keyword": "bu",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "displayName": "env",
+     "keyword": "env",
+     "dataType": "STRING",
+     "complexType": "MULTI",
+     "defaultSelection": {
+      "values": {
+       "dataType": "STRING",
+       "values": [
+        {
+         "value": "All"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "pages": [
+  {
+   "name": "filters",
+   "displayName": "Filters",
+   "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+   "layout": [
+    {
+     "widget": {
+      "name": "filter_time",
+      "queries": [
+       {
+        "name": "qp_0",
+        "query": {
+         "datasetName": "kpi_headline",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_1",
+        "query": {
+         "datasetName": "spend_kpi",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_2",
+        "query": {
+         "datasetName": "time_series_pct",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_3",
+        "query": {
+         "datasetName": "time_series_counts",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_4",
+        "query": {
+         "datasetName": "breakdown_by_bu",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_5",
+        "query": {
+         "datasetName": "bu_heatmap",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_6",
+        "query": {
+         "datasetName": "breakdown_by_env",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_7",
+        "query": {
+         "datasetName": "bu_scorecard",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_8",
+        "query": {
+         "datasetName": "bu_opportunities",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_9",
+        "query": {
+         "datasetName": "bu_trend",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_10",
+        "query": {
+         "datasetName": "env_kpi",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_11",
+        "query": {
+         "datasetName": "env_heatmap",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_12",
+        "query": {
+         "datasetName": "job_table",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_13",
+        "query": {
+         "datasetName": "serverless_job_table",
+         "parameters": [
+          {
+           "name": "time_range",
+           "keyword": "time_range"
+          }
+         ],
+         "disaggregated": false
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "filter-date-range-picker",
+       "encodings": {
+        "fields": [
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_0"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_1"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_2"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_3"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_4"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_5"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_6"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_7"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_8"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_9"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_10"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_11"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_12"
+         },
+         {
+          "parameterName": "time_range",
+          "queryName": "qp_13"
+         }
+        ]
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Date Range"
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 0,
+      "width": 2,
+      "height": 2
+     }
+    },
+    {
+     "widget": {
+      "name": "filter_bu",
+      "queries": [
+       {
+        "name": "options",
+        "query": {
+         "datasetName": "param_bu",
+         "fields": [
+          {
+           "name": "bu",
+           "expression": "`bu`"
+          },
+          {
+           "name": "bu_associativity",
+           "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_0",
+        "query": {
+         "datasetName": "kpi_headline",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_1",
+        "query": {
+         "datasetName": "spend_kpi",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_2",
+        "query": {
+         "datasetName": "time_series_pct",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_3",
+        "query": {
+         "datasetName": "time_series_counts",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_4",
+        "query": {
+         "datasetName": "breakdown_by_bu",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_5",
+        "query": {
+         "datasetName": "bu_heatmap",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_6",
+        "query": {
+         "datasetName": "breakdown_by_env",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_7",
+        "query": {
+         "datasetName": "bu_scorecard",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_8",
+        "query": {
+         "datasetName": "bu_opportunities",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_9",
+        "query": {
+         "datasetName": "bu_trend",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_10",
+        "query": {
+         "datasetName": "env_kpi",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_11",
+        "query": {
+         "datasetName": "env_heatmap",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_12",
+        "query": {
+         "datasetName": "job_table",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_13",
+        "query": {
+         "datasetName": "serverless_job_table",
+         "parameters": [
+          {
+           "name": "bu",
+           "keyword": "bu"
+          }
+         ],
+         "disaggregated": false
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "filter-multi-select",
+       "encodings": {
+        "fields": [
+         {
+          "fieldName": "bu",
+          "displayName": "Business Unit",
+          "queryName": "options"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_0"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_1"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_2"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_3"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_4"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_5"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_6"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_7"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_8"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_9"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_10"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_11"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_12"
+         },
+         {
+          "parameterName": "bu",
+          "queryName": "qp_13"
+         }
+        ]
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Business Unit"
+       }
+      }
+     },
+     "position": {
+      "x": 2,
+      "y": 0,
+      "width": 2,
+      "height": 2
+     }
+    },
+    {
+     "widget": {
+      "name": "filter_env",
+      "queries": [
+       {
+        "name": "options",
+        "query": {
+         "datasetName": "param_env",
+         "fields": [
+          {
+           "name": "env",
+           "expression": "`env`"
+          },
+          {
+           "name": "env_associativity",
+           "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_0",
+        "query": {
+         "datasetName": "kpi_headline",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_1",
+        "query": {
+         "datasetName": "spend_kpi",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_2",
+        "query": {
+         "datasetName": "time_series_pct",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_3",
+        "query": {
+         "datasetName": "time_series_counts",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_4",
+        "query": {
+         "datasetName": "breakdown_by_bu",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_5",
+        "query": {
+         "datasetName": "bu_heatmap",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_6",
+        "query": {
+         "datasetName": "breakdown_by_env",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_7",
+        "query": {
+         "datasetName": "bu_scorecard",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_8",
+        "query": {
+         "datasetName": "bu_opportunities",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_9",
+        "query": {
+         "datasetName": "env_kpi",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_10",
+        "query": {
+         "datasetName": "env_heatmap",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_11",
+        "query": {
+         "datasetName": "job_table",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       },
+       {
+        "name": "qp_12",
+        "query": {
+         "datasetName": "serverless_job_table",
+         "parameters": [
+          {
+           "name": "env",
+           "keyword": "env"
+          }
+         ],
+         "disaggregated": false
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "filter-multi-select",
+       "encodings": {
+        "fields": [
+         {
+          "fieldName": "env",
+          "displayName": "Environment",
+          "queryName": "options"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_0"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_1"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_2"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_3"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_4"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_5"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_6"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_7"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_8"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_9"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_10"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_11"
+         },
+         {
+          "parameterName": "env",
+          "queryName": "qp_12"
+         }
+        ]
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Environment"
+       }
+      }
+     },
+     "position": {
+      "x": 4,
+      "y": 0,
+      "width": 2,
+      "height": 2
+     }
+    }
+   ]
+  },
+  {
+   "name": "overview",
+   "displayName": "Migration Tracker",
+   "pageType": "PAGE_TYPE_CANVAS",
+   "layout": [
+    {
+     "widget": {
+      "name": "ov_title",
+      "multilineTextboxSpec": {
+       "lines": [
+        "# StoneX Serverless Migration Tracker \u2014 System Tables Edition"
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 0,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_sub",
+      "multilineTextboxSpec": {
+       "lines": [
+        "Job-count migration progress across Business Units, computed entirely from `system.billing.usage`, `system.lakeflow.*`, and `system.access.workspaces_latest`. Each job is classified All-Purpose \u2192 Jobs-Compute \u2192 Serverless (worst\u2192target) over the selected window."
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 1,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "kpi_pct_srv",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "kpi_headline",
+         "fields": [
+          {
+           "name": "pct_serverless",
+           "expression": "`pct_serverless`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "counter",
+       "encodings": {
+        "value": {
+         "fieldName": "pct_serverless",
+         "displayName": "% Jobs on Serverless",
+         "style": {
+          "rules": []
+         },
+         "format": {
+          "type": "number-plain",
+          "abbreviation": "none",
+          "decimalPlaces": {
+           "type": "max",
+           "places": 1
+          }
+         },
+         "formatTemplate": "{{ @formatted }}%"
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "% Jobs on Serverless",
+        "headerAlignment": "center"
+       }
+      },
+      "specExtensions": {
+       "widgetBackgroundColor": {
+        "light": "#056F22",
+        "dark": "#056F22"
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 2,
+      "width": 2,
+      "height": 3
+     }
+    },
+    {
+     "widget": {
+      "name": "kpi_total",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "kpi_headline",
+         "fields": [
+          {
+           "name": "total_jobs",
+           "expression": "`total_jobs`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "counter",
+       "encodings": {
+        "value": {
+         "fieldName": "total_jobs",
+         "displayName": "Total Jobs",
+         "style": {
+          "rules": []
+         },
+         "format": {
+          "type": "number-plain",
+          "abbreviation": "compact",
+          "decimalPlaces": {
+           "type": "max",
+           "places": 0
+          }
+         }
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Total Jobs",
+        "headerAlignment": "center"
+       }
+      }
+     },
+     "position": {
+      "x": 2,
+      "y": 2,
+      "width": 2,
+      "height": 3
+     }
+    },
+    {
+     "widget": {
+      "name": "kpi_ap",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "kpi_headline",
+         "fields": [
+          {
+           "name": "jobs_all_purpose",
+           "expression": "`jobs_all_purpose`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "counter",
+       "encodings": {
+        "value": {
+         "fieldName": "jobs_all_purpose",
+         "displayName": "Jobs on All-Purpose",
+         "style": {
+          "rules": []
+         },
+         "format": {
+          "type": "number-plain",
+          "abbreviation": "compact",
+          "decimalPlaces": {
+           "type": "max",
+           "places": 0
+          }
+         }
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Jobs on All-Purpose",
+        "headerAlignment": "center"
+       }
+      },
+      "specExtensions": {
+       "widgetBackgroundColor": {
+        "light": "#A83206",
+        "dark": "#A83206"
+       }
+      }
+     },
+     "position": {
+      "x": 4,
+      "y": 2,
+      "width": 2,
+      "height": 3
+     }
+    },
+    {
+     "widget": {
+      "name": "kpi_srv_spend",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "spend_kpi",
+         "fields": [
+          {
+           "name": "serverless_spend",
+           "expression": "`serverless_spend`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "counter",
+       "encodings": {
+        "value": {
+         "fieldName": "serverless_spend",
+         "displayName": "Serverless Spend ($, list)",
+         "style": {
+          "rules": []
+         },
+         "format": {
+          "type": "number-currency",
+          "currencyCode": "USD",
+          "abbreviation": "compact",
+          "decimalPlaces": {
+           "type": "exact",
+           "places": 2
+          }
+         }
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Serverless Spend ($, list)",
+        "headerAlignment": "center"
+       }
+      },
+      "specExtensions": {
+       "widgetBackgroundColor": {
+        "light": "#056F22",
+        "dark": "#056F22"
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 5,
+      "width": 2,
+      "height": 3
+     }
+    },
+    {
+     "widget": {
+      "name": "kpi_jc_spend",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "spend_kpi",
+         "fields": [
+          {
+           "name": "classic_jobs_spend",
+           "expression": "`classic_jobs_spend`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "counter",
+       "encodings": {
+        "value": {
+         "fieldName": "classic_jobs_spend",
+         "displayName": "Classic-Jobs Spend ($, list)",
+         "style": {
+          "rules": []
+         },
+         "format": {
+          "type": "number-currency",
+          "currencyCode": "USD",
+          "abbreviation": "compact",
+          "decimalPlaces": {
+           "type": "exact",
+           "places": 2
+          }
+         }
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Classic-Jobs Spend ($, list)",
+        "headerAlignment": "center"
+       }
+      },
+      "specExtensions": {
+       "widgetBackgroundColor": {
+        "light": "#BCC016",
+        "dark": "#BCC016"
+       }
+      }
+     },
+     "position": {
+      "x": 2,
+      "y": 5,
+      "width": 2,
+      "height": 3
+     }
+    },
+    {
+     "widget": {
+      "name": "kpi_ap_spend",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "spend_kpi",
+         "fields": [
+          {
+           "name": "all_purpose_total_spend",
+           "expression": "`all_purpose_total_spend`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "counter",
+       "encodings": {
+        "value": {
+         "fieldName": "all_purpose_total_spend",
+         "displayName": "All-Purpose Compute ($, all usage)",
+         "style": {
+          "rules": []
+         },
+         "format": {
+          "type": "number-currency",
+          "currencyCode": "USD",
+          "abbreviation": "compact",
+          "decimalPlaces": {
+           "type": "exact",
+           "places": 2
+          }
+         }
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "All-Purpose Compute ($, all usage)",
+        "headerAlignment": "center"
+       }
+      },
+      "specExtensions": {
+       "widgetBackgroundColor": {
+        "light": "#A83206",
+        "dark": "#A83206"
+       }
+      }
+     },
+     "position": {
+      "x": 4,
+      "y": 5,
+      "width": 2,
+      "height": 3
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_opp",
+      "multilineTextboxSpec": {
+       "lines": [
+        "## Top Opportunities"
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 8,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "opp_50",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "bu_opportunities",
+         "fields": [
+          {
+           "name": "bus_above_50pct",
+           "expression": "`bus_above_50pct`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "counter",
+       "encodings": {
+        "value": {
+         "fieldName": "bus_above_50pct",
+         "displayName": "BUs > 50% Serverless",
+         "style": {
+          "rules": []
+         }
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "BUs > 50% Serverless",
+        "headerAlignment": "center"
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 9,
+      "width": 2,
+      "height": 3
+     }
+    },
+    {
+     "widget": {
+      "name": "opp_5",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "bu_opportunities",
+         "fields": [
+          {
+           "name": "bus_below_5pct",
+           "expression": "`bus_below_5pct`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "counter",
+       "encodings": {
+        "value": {
+         "fieldName": "bus_below_5pct",
+         "displayName": "BUs < 5% Serverless",
+         "style": {
+          "rules": []
+         }
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "BUs < 5% Serverless",
+        "headerAlignment": "center"
+       }
+      }
+     },
+     "position": {
+      "x": 2,
+      "y": 9,
+      "width": 2,
+      "height": 3
+     }
+    },
+    {
+     "widget": {
+      "name": "opp_ap",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "bu_opportunities",
+         "fields": [
+          {
+           "name": "largest_ap_fleet",
+           "expression": "`largest_ap_fleet`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "counter",
+       "encodings": {
+        "value": {
+         "fieldName": "largest_ap_fleet",
+         "displayName": "Largest All-Purpose Fleet",
+         "style": {
+          "rules": []
+         }
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Largest All-Purpose Fleet",
+        "headerAlignment": "center"
+       }
+      }
+     },
+     "position": {
+      "x": 4,
+      "y": 9,
+      "width": 2,
+      "height": 3
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_trend_h",
+      "multilineTextboxSpec": {
+       "lines": [
+        "## Migration Velocity"
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 12,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_trend",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "time_series_pct",
+         "fields": [
+          {
+           "name": "week",
+           "expression": "`week`"
+          },
+          {
+           "name": "sum(pct_serverless)",
+           "expression": "SUM(`pct_serverless`)"
+          }
+         ],
+         "disaggregated": false
+        }
+       }
+      ],
+      "spec": {
+       "version": 3,
+       "widgetType": "line",
+       "encodings": {
+        "x": {
+         "fieldName": "week",
+         "scale": {
+          "type": "temporal"
+         },
+         "displayName": "week"
+        },
+        "y": {
+         "fieldName": "sum(pct_serverless)",
+         "scale": {
+          "type": "quantitative"
+         },
+         "displayName": "pct_serverless"
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "% Jobs on Serverless Over Time"
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 13,
+      "width": 6,
+      "height": 6
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_mix_h",
+      "multilineTextboxSpec": {
+       "lines": [
+        "## Compute Mix"
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 19,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_counts",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "time_series_counts",
+         "fields": [
+          {
+           "name": "week",
+           "expression": "`week`"
+          },
+          {
+           "name": "sum(all_purpose)",
+           "expression": "SUM(`all_purpose`)"
+          },
+          {
+           "name": "sum(jobs_compute)",
+           "expression": "SUM(`jobs_compute`)"
+          },
+          {
+           "name": "sum(serverless)",
+           "expression": "SUM(`serverless`)"
+          }
+         ],
+         "disaggregated": false
+        }
+       }
+      ],
+      "spec": {
+       "version": 3,
+       "widgetType": "bar",
+       "encodings": {
+        "x": {
+         "fieldName": "week",
+         "scale": {
+          "type": "temporal"
+         },
+         "displayName": "week"
+        },
+        "y": {
+         "scale": {
+          "type": "quantitative"
+         },
+         "fields": [
+          {
+           "fieldName": "sum(all_purpose)",
+           "displayName": "all_purpose"
+          },
+          {
+           "fieldName": "sum(jobs_compute)",
+           "displayName": "jobs_compute"
+          },
+          {
+           "fieldName": "sum(serverless)",
+           "displayName": "serverless"
+          }
+         ]
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Jobs by Compute Type per Week"
+       },
+       "mark": {
+        "colors": [
+         "#FF3621",
+         "#FFAB00",
+         "#00A972"
+        ]
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 20,
+      "width": 3,
+      "height": 6
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_bu_mix",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "breakdown_by_bu",
+         "fields": [
+          {
+           "name": "bu",
+           "expression": "`bu`"
+          },
+          {
+           "name": "compute_type",
+           "expression": "`compute_type`"
+          },
+          {
+           "name": "sum(jobs)",
+           "expression": "SUM(`jobs`)"
+          }
+         ],
+         "disaggregated": false
+        }
+       }
+      ],
+      "spec": {
+       "version": 3,
+       "widgetType": "bar",
+       "encodings": {
+        "x": {
+         "fieldName": "bu",
+         "scale": {
+          "type": "categorical"
+         },
+         "displayName": "bu"
+        },
+        "y": {
+         "fieldName": "sum(jobs)",
+         "scale": {
+          "type": "quantitative"
+         },
+         "displayName": "jobs"
+        },
+        "color": {
+         "fieldName": "compute_type",
+         "scale": {
+          "type": "categorical",
+          "mappings": [
+           {
+            "value": "All-Purpose",
+            "color": "#FF3621"
+           },
+           {
+            "value": "Jobs-Compute",
+            "color": "#FFAB00"
+           },
+           {
+            "value": "Serverless",
+            "color": "#00A972"
+           }
+          ]
+         },
+         "displayName": "compute_type"
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Compute Mix by Business Unit"
+       }
+      }
+     },
+     "position": {
+      "x": 3,
+      "y": 20,
+      "width": 3,
+      "height": 6
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_heatmap",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "bu_heatmap",
+         "fields": [
+          {
+           "name": "compute_type",
+           "expression": "`compute_type`"
+          },
+          {
+           "name": "bu",
+           "expression": "`bu`"
+          },
+          {
+           "name": "sum(pct_of_bu)",
+           "expression": "SUM(`pct_of_bu`)"
+          }
+         ],
+         "disaggregated": false
+        }
+       }
+      ],
+      "spec": {
+       "version": 3,
+       "widgetType": "heatmap",
+       "frame": {
+        "showTitle": true,
+        "title": "BU \u00d7 Compute Type Heatmap",
+        "showDescription": true,
+        "description": "Share of jobs within each BU by compute type (rows sum to 100%)."
+       },
+       "encodings": {
+        "x": {
+         "fieldName": "compute_type",
+         "displayName": "compute_type",
+         "scale": {
+          "type": "categorical"
+         }
+        },
+        "y": {
+         "fieldName": "bu",
+         "displayName": "bu",
+         "scale": {
+          "type": "categorical"
+         }
+        },
+        "color": {
+         "fieldName": "sum(pct_of_bu)",
+         "displayName": "% of jobs",
+         "format": {
+          "type": "number-plain",
+          "abbreviation": "none",
+          "decimalPlaces": {
+           "type": "max",
+           "places": 1
+          }
+         },
+         "formatTemplate": "{{ @formatted }}%",
+         "scale": {
+          "type": "quantitative",
+          "colorRamp": {
+           "mode": "scheme",
+           "scheme": "plasma"
+          },
+          "domain": {
+           "min": 0,
+           "max": 100
+          }
+         }
+        },
+        "label": {
+         "show": true,
+         "text": {
+          "fieldName": "sum(pct_of_bu)",
+          "formatTemplate": "{{ @formatted }}%",
+          "format": {
+           "type": "number-plain",
+           "abbreviation": "none",
+           "decimalPlaces": {
+            "type": "max",
+            "places": 1
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 26,
+      "width": 6,
+      "height": 7
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_score_h",
+      "multilineTextboxSpec": {
+       "lines": [
+        "## BU Scorecard"
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 33,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "ov_score",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "bu_scorecard",
+         "fields": [
+          {
+           "name": "bu",
+           "expression": "`bu`"
+          },
+          {
+           "name": "total_jobs",
+           "expression": "`total_jobs`"
+          },
+          {
+           "name": "serverless_jobs",
+           "expression": "`serverless_jobs`"
+          },
+          {
+           "name": "pct_serverless",
+           "expression": "`pct_serverless`"
+          },
+          {
+           "name": "all_purpose_jobs",
+           "expression": "`all_purpose_jobs`"
+          },
+          {
+           "name": "pct_all_purpose",
+           "expression": "`pct_all_purpose`"
+          },
+          {
+           "name": "jobs_compute_jobs",
+           "expression": "`jobs_compute_jobs`"
+          },
+          {
+           "name": "pct_jobs_compute",
+           "expression": "`pct_jobs_compute`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "table",
+       "encodings": {
+        "columns": [
+         {
+          "fieldName": "bu",
+          "displayName": "Business Unit"
+         },
+         {
+          "fieldName": "total_jobs",
+          "displayName": "Total Jobs"
+         },
+         {
+          "fieldName": "serverless_jobs",
+          "displayName": "Serverless Jobs"
+         },
+         {
+          "fieldName": "pct_serverless",
+          "displayName": "% Serverless"
+         },
+         {
+          "fieldName": "all_purpose_jobs",
+          "displayName": "All-Purpose Jobs"
+         },
+         {
+          "fieldName": "pct_all_purpose",
+          "displayName": "% All-Purpose"
+         },
+         {
+          "fieldName": "jobs_compute_jobs",
+          "displayName": "Jobs-Compute Jobs"
+         },
+         {
+          "fieldName": "pct_jobs_compute",
+          "displayName": "% Jobs-Compute"
+         }
+        ]
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "BU Scorecard Summary"
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 34,
+      "width": 6,
+      "height": 7
+     }
+    }
+   ]
+  },
+  {
+   "name": "drilldown",
+   "displayName": "BU Drill-Down",
+   "pageType": "PAGE_TYPE_CANVAS",
+   "layout": [
+    {
+     "widget": {
+      "name": "dd_title",
+      "multilineTextboxSpec": {
+       "lines": [
+        "# BU / Environment Drill-Down"
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 0,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "dd_sub",
+      "multilineTextboxSpec": {
+       "lines": [
+        "Use the **BU** filter on the Filters page to focus on one Business Unit. Tables list the per-job migration backlog (jobs still on All-Purpose / Classic) and current serverless jobs."
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 1,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "dd_env_h",
+      "multilineTextboxSpec": {
+       "lines": [
+        "## Per-Environment Compute Mix"
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 2,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "dd_env_mix",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "env_heatmap",
+         "fields": [
+          {
+           "name": "compute_type",
+           "expression": "`compute_type`"
+          },
+          {
+           "name": "env",
+           "expression": "`env`"
+          },
+          {
+           "name": "sum(pct_of_env)",
+           "expression": "SUM(`pct_of_env`)"
+          }
+         ],
+         "disaggregated": false
+        }
+       }
+      ],
+      "spec": {
+       "version": 3,
+       "widgetType": "heatmap",
+       "frame": {
+        "showTitle": true,
+        "title": "Compute Mix by Environment",
+        "showDescription": true,
+        "description": "Share of jobs within each environment by compute type (rows sum to 100%)."
+       },
+       "encodings": {
+        "x": {
+         "fieldName": "compute_type",
+         "displayName": "compute_type",
+         "scale": {
+          "type": "categorical"
+         }
+        },
+        "y": {
+         "fieldName": "env",
+         "displayName": "env",
+         "scale": {
+          "type": "categorical"
+         }
+        },
+        "color": {
+         "fieldName": "sum(pct_of_env)",
+         "displayName": "% of jobs",
+         "format": {
+          "type": "number-plain",
+          "abbreviation": "none",
+          "decimalPlaces": {
+           "type": "max",
+           "places": 1
+          }
+         },
+         "formatTemplate": "{{ @formatted }}%",
+         "scale": {
+          "type": "quantitative",
+          "colorRamp": {
+           "mode": "scheme",
+           "scheme": "plasma"
+          },
+          "domain": {
+           "min": 0,
+           "max": 100
+          }
+         }
+        },
+        "label": {
+         "show": true,
+         "text": {
+          "fieldName": "sum(pct_of_env)",
+          "formatTemplate": "{{ @formatted }}%",
+          "format": {
+           "type": "number-plain",
+           "abbreviation": "none",
+           "decimalPlaces": {
+            "type": "max",
+            "places": 1
+           }
+          }
+         }
+        }
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 3,
+      "width": 3,
+      "height": 6
+     }
+    },
+    {
+     "widget": {
+      "name": "dd_env_counts",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "env_kpi",
+         "fields": [
+          {
+           "name": "env",
+           "expression": "`env`"
+          },
+          {
+           "name": "sum(jobs_all_purpose)",
+           "expression": "SUM(`jobs_all_purpose`)"
+          },
+          {
+           "name": "sum(jobs_classic)",
+           "expression": "SUM(`jobs_classic`)"
+          },
+          {
+           "name": "sum(jobs_serverless)",
+           "expression": "SUM(`jobs_serverless`)"
+          }
+         ],
+         "disaggregated": false
+        }
+       }
+      ],
+      "spec": {
+       "version": 3,
+       "widgetType": "bar",
+       "encodings": {
+        "x": {
+         "fieldName": "env",
+         "scale": {
+          "type": "temporal"
+         },
+         "displayName": "env"
+        },
+        "y": {
+         "scale": {
+          "type": "quantitative"
+         },
+         "fields": [
+          {
+           "fieldName": "sum(jobs_all_purpose)",
+           "displayName": "jobs_all_purpose"
+          },
+          {
+           "fieldName": "sum(jobs_classic)",
+           "displayName": "jobs_classic"
+          },
+          {
+           "fieldName": "sum(jobs_serverless)",
+           "displayName": "jobs_serverless"
+          }
+         ]
+        }
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Job Counts by Environment"
+       },
+       "mark": {
+        "colors": [
+         "#FF3621",
+         "#FFAB00",
+         "#00A972"
+        ]
+       }
+      }
+     },
+     "position": {
+      "x": 3,
+      "y": 3,
+      "width": 3,
+      "height": 6
+     }
+    },
+    {
+     "widget": {
+      "name": "dd_jobs_h",
+      "multilineTextboxSpec": {
+       "lines": [
+        "## Migration Backlog \u2014 Jobs on All-Purpose / Classic"
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 9,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "dd_jobs",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "job_table",
+         "fields": [
+          {
+           "name": "workspace_name",
+           "expression": "`workspace_name`"
+          },
+          {
+           "name": "bu",
+           "expression": "`bu`"
+          },
+          {
+           "name": "env",
+           "expression": "`env`"
+          },
+          {
+           "name": "job_id",
+           "expression": "`job_id`"
+          },
+          {
+           "name": "job_name",
+           "expression": "`job_name`"
+          },
+          {
+           "name": "compute_bucket",
+           "expression": "`compute_bucket`"
+          },
+          {
+           "name": "run_count",
+           "expression": "`run_count`"
+          },
+          {
+           "name": "active_days",
+           "expression": "`active_days`"
+          },
+          {
+           "name": "avg_runtime_min",
+           "expression": "`avg_runtime_min`"
+          },
+          {
+           "name": "last_run_date",
+           "expression": "`last_run_date`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "table",
+       "encodings": {
+        "columns": [
+         {
+          "fieldName": "workspace_name",
+          "displayName": "Workspace"
+         },
+         {
+          "fieldName": "bu",
+          "displayName": "BU"
+         },
+         {
+          "fieldName": "env",
+          "displayName": "Env"
+         },
+         {
+          "fieldName": "job_id",
+          "displayName": "Job ID"
+         },
+         {
+          "fieldName": "job_name",
+          "displayName": "Job Name"
+         },
+         {
+          "fieldName": "compute_bucket",
+          "displayName": "Compute"
+         },
+         {
+          "fieldName": "run_count",
+          "displayName": "Runs"
+         },
+         {
+          "fieldName": "active_days",
+          "displayName": "Active Days"
+         },
+         {
+          "fieldName": "avg_runtime_min",
+          "displayName": "Avg Runtime (min)"
+         },
+         {
+          "fieldName": "last_run_date",
+          "displayName": "Last Run"
+         }
+        ]
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Per-Job Drill-Down (All-Purpose + Classic)"
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 10,
+      "width": 6,
+      "height": 7
+     }
+    },
+    {
+     "widget": {
+      "name": "dd_srv_h",
+      "multilineTextboxSpec": {
+       "lines": [
+        "## Already on Serverless"
+       ]
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 17,
+      "width": 6,
+      "height": 1
+     }
+    },
+    {
+     "widget": {
+      "name": "dd_srv",
+      "queries": [
+       {
+        "name": "main_query",
+        "query": {
+         "datasetName": "serverless_job_table",
+         "fields": [
+          {
+           "name": "bu",
+           "expression": "`bu`"
+          },
+          {
+           "name": "env",
+           "expression": "`env`"
+          },
+          {
+           "name": "workspace_name",
+           "expression": "`workspace_name`"
+          },
+          {
+           "name": "job_id",
+           "expression": "`job_id`"
+          },
+          {
+           "name": "job_name",
+           "expression": "`job_name`"
+          },
+          {
+           "name": "serverless_dbus",
+           "expression": "`serverless_dbus`"
+          },
+          {
+           "name": "first_usage",
+           "expression": "`first_usage`"
+          },
+          {
+           "name": "last_usage",
+           "expression": "`last_usage`"
+          }
+         ],
+         "disaggregated": true
+        }
+       }
+      ],
+      "spec": {
+       "version": 2,
+       "widgetType": "table",
+       "encodings": {
+        "columns": [
+         {
+          "fieldName": "bu",
+          "displayName": "BU"
+         },
+         {
+          "fieldName": "env",
+          "displayName": "Env"
+         },
+         {
+          "fieldName": "workspace_name",
+          "displayName": "Workspace"
+         },
+         {
+          "fieldName": "job_id",
+          "displayName": "Job ID"
+         },
+         {
+          "fieldName": "job_name",
+          "displayName": "Job Name"
+         },
+         {
+          "fieldName": "serverless_dbus",
+          "displayName": "Serverless DBUs"
+         },
+         {
+          "fieldName": "first_usage",
+          "displayName": "First Usage"
+         },
+         {
+          "fieldName": "last_usage",
+          "displayName": "Last Usage"
+         }
+        ]
+       },
+       "frame": {
+        "showTitle": true,
+        "title": "Serverless Jobs Detail"
+       }
+      }
+     },
+     "position": {
+      "x": 0,
+      "y": 18,
+      "width": 6,
+      "height": 7
+     }
+    }
+   ]
+  }
+ ],
+ "uiSettings": {
+  "theme": {
+   "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+  }
+ }
+}

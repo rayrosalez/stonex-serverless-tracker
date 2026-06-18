@@ -1,0 +1,29 @@
+# Databricks Asset Bundle — Serverless Migration Tracker
+# Deploy:  databricks bundle deploy -t prod
+# Docs:    https://docs.databricks.com/dev-tools/bundles/index.html
+
+bundle:
+  name: stonex-serverless-tracker
+
+variables:
+  warehouse_id:
+    description: ID of the SQL warehouse that powers the dashboard queries.
+    # Find it under SQL Warehouses → (your warehouse) → the ID in the URL/details.
+    default: ""
+
+resources:
+  dashboards:
+    serverless_tracker:
+      display_name: "Serverless Migration Tracker"
+      file_path: ./src/serverless_tracker.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      # parent_path defaults to the bundle's workspace path; override if desired.
+
+targets:
+  prod:
+    mode: production
+    default: true
+    workspace:
+      # ===== EDIT: your Databricks workspace URL =====
+      host: https://<your-workspace>.cloud.databricks.com
+      # On Azure:  https://adb-<id>.<n>.azuredatabricks.net
